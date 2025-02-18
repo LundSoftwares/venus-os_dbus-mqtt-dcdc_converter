@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "*** starting dbus-mqtt-dcdc_converter ***"
+exec 2>&1
+exec /data/etc/dbus-mqtt-dcdc_converter/dbus-mqtt-dcdc_converter.py
