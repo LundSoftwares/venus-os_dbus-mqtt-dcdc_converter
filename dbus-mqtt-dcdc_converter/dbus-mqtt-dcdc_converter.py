@@ -94,7 +94,7 @@ state = 0
 
 
 # MQTT requests
-def on_disconnect(client, userdata, rc):
+def on_disconnect(client, userdata, flags, rc, properties):
     global connected
     logging.warning("MQTT client: Got disconnected")
     if rc != 0:
@@ -118,7 +118,7 @@ def on_disconnect(client, userdata, rc):
             sleep(15)
 
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties):
     global connected
     if rc == 0:
         logging.info("MQTT client: Connected to MQTT broker!")
@@ -233,7 +233,7 @@ class DbusMqttDCDCChargerService:
         customname="MQTT DCDC Charger",
         connection="MQTT DCDC Charger service",
     ):
-        self._dbusservice = VeDbusService(servicename)
+        self._dbusservice = VeDbusService(servicename, register=True)
         self._paths = paths
 
         logging.debug("%s /DeviceInstance = %d" % (servicename, deviceinstance))
@@ -354,7 +354,7 @@ def main():
     DBusGMainLoop(set_as_default=True)
 
     # MQTT setup
-    client = mqtt.Client("MqttDCDCcharger_" + str(config["MQTT"]["device_instance"]))
+    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2,"MqttDCDCcharger_" + str(config["MQTT"]["device_instance"]))
     client.on_disconnect = on_disconnect
     client.on_connect = on_connect
     client.on_message = on_message
